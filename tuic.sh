@@ -83,9 +83,9 @@ if [ -d "/root/tuic" ]; then
             systemctl daemon-reload
             systemctl restart tuic
             public_ip=$(curl -s https://api.ipify.org)
-            isp=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g')
+            ISP=$(curl -sm 3 -H "User-Agent: Mozilla/5.0" "https://api.ip.sb/geoip" | tr -d '\n' | awk -F\" '{c="";i="";for(x=1;x<=NF;x++){if($x=="country_code")c=$(x+2);if($x=="isp")i=$(x+2)};if(c&&i)print c"-"i}' | sed 's/ /_/g' || echo "unknown")
             echo -e "\e[1;33m\nV2rayN、NekoBox\e[0m"
-            echo -e "\e[1;32mtuic://$new_uuid:$password@$public_ip:$new_port?congestion_control=bbr&alpn=h3&sni=www.bing.com&udp_relay_mode=native&allow_insecure=1#$isp\e[0m"
+            echo -e "\e[1;32mtuic://$new_uuid:$password@$public_ip:$new_port?congestion_control=bbr&alpn=h3&sni=www.bing.com&udp_relay_mode=native&allow_insecure=1#$ISP\e[0m"
             echo ""
             exit 0
             ;;
@@ -230,9 +230,9 @@ systemctl restart tuic
 public_ip=$(curl -s https://api.ipify.org)
 
 # get ipinfo
-isp=$(curl -s https://speed.cloudflare.com/meta | awk -F\" '{print $26"-"$18}' | sed -e 's/ /_/g')
+ISP=$(curl -sm 3 -H "User-Agent: Mozilla/5.0" "https://api.ip.sb/geoip" | tr -d '\n' | awk -F\" '{c="";i="";for(x=1;x<=NF;x++){if($x=="country_code")c=$(x+2);if($x=="isp")i=$(x+2)};if(c&&i)print c"-"i}' | sed 's/ /_/g' || echo "unknown")
 
 # nekoray/nekobox URL
 echo -e "\e[1;33m\nV2rayN、NekoBox\e[0m"
-echo -e "\e[1;32mtuic://$UUID:$password@$public_ip:$port?congestion_control=bbr&alpn=h3&sni=www.bing.com&udp_relay_mode=native&allow_insecure=1#$isp\e[0m"
+echo -e "\e[1;32mtuic://$UUID:$password@$public_ip:$port?congestion_control=bbr&alpn=h3&sni=www.bing.com&udp_relay_mode=native&allow_insecure=1#$ISP\e[0m"
 echo ""
